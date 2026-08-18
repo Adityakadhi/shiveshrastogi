@@ -262,14 +262,6 @@
   .field input::placeholder{color:rgba(237,230,214,0.28);}
   .field input:focus{border-bottom-color:var(--gold);}
 
-  .field input[type="time"]{
-    color-scheme: dark;
-  }
-  .field input[type="time"]::-webkit-calendar-picker-indicator{
-    filter: invert(76%) sepia(24%) saturate(482%) hue-rotate(358deg) brightness(92%) contrast(88%);
-    cursor:pointer;
-  }
-
   .avail-label{
     font-size:10.5px;
     letter-spacing:2.5px;
@@ -312,33 +304,38 @@
     box-shadow:0 0 0 1px var(--gold) inset;
   }
 
-  .time-btn{
-    flex:1;
-    padding:16px 8px;
+  .slot-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:10px;
+    margin-bottom:32px;
+  }
+  .slot-btn{
+    padding:13px 6px;
     background:transparent;
     border:1px solid rgba(198,166,100,0.35);
     color:var(--ivory);
-    font-family:'Cormorant Garamond', serif;
-    font-size:19px;
-    letter-spacing:1px;
+    font-family:'Jost', sans-serif;
+    font-size:12px;
+    font-weight:400;
+    letter-spacing:0.2px;
     cursor:pointer;
-    transition:all 0.3s ease;
+    transition:all 0.25s ease;
     text-align:center;
+    line-height:1.35;
   }
-  .time-btn .sub{
-    display:block;
-    font-family:'Jost',sans-serif;
-    font-size:9.5px;
-    letter-spacing:2px;
-    text-transform:uppercase;
-    margin-top:4px;
-    opacity:0.6;
-  }
-  .time-btn:hover{border-color:var(--gold);}
-  .time-btn.selected{
+  .slot-btn:hover{
     border-color:var(--gold);
-    background:rgba(198,166,100,0.1);
+    transform:translateY(-1px);
+  }
+  .slot-btn.selected{
+    border-color:var(--gold);
+    background:rgba(198,166,100,0.12);
     box-shadow:0 0 0 1px var(--gold) inset;
+    color:var(--gold-soft);
+  }
+  @media (max-width:380px){
+    .slot-grid{grid-template-columns:repeat(2, 1fr);}
   }
 
   .submit-btn{
@@ -369,6 +366,59 @@
     color:var(--bordeaux-light);
     margin:-14px 0 18px;
     min-height:14px;
+  }
+
+  /* ---------- ERROR MODAL ---------- */
+  .error-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    align-items:center;
+    justify-content:center;
+    z-index:50;
+    padding:24px;
+  }
+  .error-overlay.show{
+    display:flex;
+  }
+  .error-box{
+    background:linear-gradient(175deg, var(--emerald) 0%, var(--ink) 100%);
+    border:1px solid var(--bordeaux-light);
+    padding:28px 26px;
+    max-width:320px;
+    text-align:center;
+  }
+  .error-box .icon{
+    width:44px; height:44px;
+    border-radius:50%;
+    background:var(--bordeaux);
+    border:1px solid var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    margin:0 auto 16px;
+    font-size:20px;
+    color:var(--gold-soft);
+  }
+  .error-box p{
+    font-size:14px;
+    line-height:1.6;
+    color:var(--ivory);
+    margin:0 0 20px;
+  }
+  .error-box button{
+    background:transparent;
+    border:1px solid var(--gold);
+    color:var(--gold-soft);
+    font-family:'Jost', sans-serif;
+    font-size:11px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    padding:10px 24px;
+    cursor:pointer;
+  }
+  .error-box button:hover{
+    background:var(--gold);
+    color:var(--ink);
   }
 
   /* ---------- CONFIRMATION ---------- */
@@ -477,7 +527,7 @@
         </div>
         <div class="field">
           <label for="contact">Contact Number</label>
-          <input type="tel" id="contact" placeholder="+971 00 000 0000" required>
+          <input type="tel" id="contact" placeholder="e.g. 971500000000" inputmode="numeric" maxlength="15" required>
         </div>
         <div class="field">
           <label for="email">Email Address</label>
@@ -490,9 +540,19 @@
           <button type="button" class="avail-btn" data-date="25th August">25<span class="sub">August</span></button>
         </div>
 
-        <div class="field">
-          <label for="time">Preferred Time</label>
-          <input type="time" id="time" required>
+        <div class="avail-label">Preferred Time Slot</div>
+        <div class="slot-grid" id="slotGrid">
+          <button type="button" class="slot-btn" data-time="9:00 AM - 10:00 AM">9 – 10<br>AM</button>
+          <button type="button" class="slot-btn" data-time="10:00 AM - 11:00 AM">10 – 11<br>AM</button>
+          <button type="button" class="slot-btn" data-time="11:00 AM - 12:00 PM">11 – 12<br>NOON</button>
+          <button type="button" class="slot-btn" data-time="12:00 PM - 1:00 PM">12 – 1<br>PM</button>
+          <button type="button" class="slot-btn" data-time="1:00 PM - 2:00 PM">1 – 2<br>PM</button>
+          <button type="button" class="slot-btn" data-time="2:00 PM - 3:00 PM">2 – 3<br>PM</button>
+          <button type="button" class="slot-btn" data-time="3:00 PM - 4:00 PM">3 – 4<br>PM</button>
+          <button type="button" class="slot-btn" data-time="4:00 PM - 5:00 PM">4 – 5<br>PM</button>
+          <button type="button" class="slot-btn" data-time="5:00 PM - 6:00 PM">5 – 6<br>PM</button>
+          <button type="button" class="slot-btn" data-time="6:00 PM - 7:00 PM">6 – 7<br>PM</button>
+          <button type="button" class="slot-btn" data-time="7:00 PM - 8:00 PM">7 – 8<br>PM</button>
         </div>
 
         <div class="field">
@@ -510,11 +570,19 @@
       <h2>You Are Confirmed</h2>
       <p id="confirmText">Thank you. Your place has been reserved and we look forward to welcoming you.</p>
       <p class="pass-note">Your virtual entry pass, with all your registration details, will be sent to your registered email shortly.</p>
-      <div class="stamp">— Invited By Mr. Shivesh Rastogi, Godrej Properties</div>
+      <div class="stamp">— Invited by Mr. Shivesh Rastogi, Godrej Properties</div>
     </div>
 
   </div>
 
+</div>
+
+<div class="error-overlay" id="errorOverlay">
+  <div class="error-box">
+    <div class="icon">!</div>
+    <p id="errorOverlayText">Please fill all the details before confirming your attendance.</p>
+    <button type="button" id="errorOverlayClose">Okay</button>
+  </div>
 </div>
 
 <script>
@@ -541,19 +609,35 @@
     });
   });
 
+  let selectedTimeSlot = null;
+  const slotBtns = document.querySelectorAll('.slot-btn');
+  slotBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      slotBtns.forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedTimeSlot = btn.dataset.time;
+    });
+  });
 
+  // Contact number: digits only, strip anything else as the user types
+  const contactInput = document.getElementById('contact');
+  contactInput.addEventListener('input', () => {
+    contactInput.value = contactInput.value.replace(/[^0-9]/g, '');
+  });
 
   const form = document.getElementById('rsvpForm');
   const errorMsg = document.getElementById('errorMsg');
   const submitBtn = document.getElementById('submitBtn');
+  const errorOverlay = document.getElementById('errorOverlay');
+  const errorOverlayText = document.getElementById('errorOverlayText');
 
-  function formatTime(hhmm){
-    if(!hhmm) return '';
-    const [h, m] = hhmm.split(':').map(Number);
-    const period = h >= 12 ? 'PM' : 'AM';
-    const hour12 = h % 12 === 0 ? 12 : h % 12;
-    return `${hour12}:${String(m).padStart(2,'0')} ${period}`;
+  function showError(message){
+    errorOverlayText.textContent = message;
+    errorOverlay.classList.add('show');
   }
+  document.getElementById('errorOverlayClose').addEventListener('click', () => {
+    errorOverlay.classList.remove('show');
+  });
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -564,18 +648,11 @@
     const contact = document.getElementById('contact').value.trim();
     const email = document.getElementById('email').value.trim();
     const pax = document.getElementById('pax').value.trim();
-    const timeRaw = document.getElementById('time').value; // "HH:MM" 24-hour, or "" if empty
 
-    if(!name || !company || !contact || !email || !pax || !timeRaw){
-      errorMsg.textContent = 'Please complete every field.';
+    if(!name || !company || !contact || !email || !pax || !selectedTimeSlot || !selectedDate){
+      showError('Please fill all the details before confirming your attendance.');
       return;
     }
-    if(!selectedDate){
-      errorMsg.textContent = 'Please select your availability.';
-      return;
-    }
-
-    const selectedTime = formatTime(timeRaw);
 
     submitBtn.disabled = true;
     submitBtn.textContent = 'Confirming…';
@@ -583,7 +660,7 @@
     const entry = {
       name, company, contact, email, pax,
       date: selectedDate,
-      time: selectedTime,
+      time: selectedTimeSlot,
       submittedAt: new Date().toISOString()
     };
 
@@ -607,12 +684,12 @@
         });
       }catch(err){
         console.error('Sheet submission error:', err);
-        // Proceed with confirmation regardless — don't block the guest experience.
+        // Proceed with confirmation regardless  don't block the guest experience.
       }
     }
 
     document.getElementById('confirmText').textContent =
-      `Thank you, ${name}. Your place has been reserved for the ${selectedDate} gathering at ${selectedTime}, for ${pax} pax. A confirmation will reach you at ${email}.`;
+      `Thank you, ${name}. Your place has been reserved for the ${selectedDate} gathering, ${selectedTimeSlot} slot, for ${pax} pax. A confirmation will reach you at ${email}.`;
 
     document.getElementById('formView').style.display = 'none';
     document.getElementById('confirmView').classList.add('show');
